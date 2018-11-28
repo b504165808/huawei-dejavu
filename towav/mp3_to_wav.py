@@ -12,11 +12,13 @@ def api_comparator(func):
 
     def mp3wav():
 
-        wav_path = r"C:\Users\yefan\Desktop\workspace\dejavu-master\wav"
-        mp3_res = os.walk(r'C:\Users\yefan\Desktop\workspace\dejavu-master\mp3')
+        wav_path = r"Q:\huawei\huawei-dejavu\wav"
+        mp3_res = os.walk(r'Q:\huawei\huawei-dejavu\mp3')
         wav_res = os.walk(wav_path)
-        lir = [li for x, km, li in wav_res][0]
-
+        try:
+            lir = [li for x, km, li in wav_res][0]
+        except IndexError:
+            lir = ['']
         for m_pt, o, mp3_list in mp3_res:
             for cur in mp3_list:
                 if '.mp3' in cur:
@@ -38,8 +40,8 @@ def api_comparator(func):
 
                         f = wave.open(flie_wav_path, 'wb')
                         f.setnchannels(1)
-                        f.setsampwidth(2)
-                        f.setframerate(44100)
+                        f.setsampwidth(1)
+                        f.setframerate(6000)
                         f.setnframes(l)
                         f.writeframes(raw_data)
                         f.close()

@@ -75,6 +75,7 @@ class Dejavu(object):
         while True:
             try:
                 song_name, hashes, file_hash = iterator.next()
+                print len(hashes)
             except multiprocessing.TimeoutError:
                 continue
             except StopIteration:
@@ -189,6 +190,7 @@ def _fingerprint_worker(filename, limit=None, song_name=None):
         hashes = fingerprint.fingerprint(channel, Fs=Fs)
         print("Finished channel %d/%d for %s" % (channeln + 1, channel_amount,
                                                  filename))
+
         result |= set(hashes)
 
     return song_name, result, file_hash

@@ -29,9 +29,9 @@ if __name__ == '__main__':
 	# mp3_to_wav
 
 	# Fingerprint all the wav's in the directory we give it
-	djv.fingerprint_directory("C:\Users\yefan\Desktop\workspace\dejavu-master\wav", [".wav"], 3)
-	print('正在识别出指定音乐·······')
-	song = djv.recognize(FileRecognizer, 'C:\Users\yefan\Desktop\workspace\dejavu-master\wav\Sean-Fournier--Falling-For-You.wav')
+	djv.fingerprint_directory("Q:\huawei\huawei-dejavu\wav", [".wav"], 3)
+	print('正在识别指定音乐·······')
+	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\wav\Josh-Woodward--I-Want-To-Destroy-Something-Beautiful.wav')
 	print('已经识别出指定音乐！')
 	print("From file we recognized: %s\n" % song)
 
