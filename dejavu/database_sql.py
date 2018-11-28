@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+
+import re
 from itertools import izip_longest
 import Queue
 
@@ -242,27 +244,27 @@ class SQLDatabase(Database):
         Inserts song in the database and returns the ID of the inserted record.
         """
 
-        with self.cursor() as cur:
-
-            cur.execute(self.INSERT_SONG, (songname, file_hash))
-            return cur.lastrowid
-        # songname = str(songname)
+        # with self.cursor() as cur:
         #
-        # global temp_save_index
-        # global temp_song_name
-        # if not temp_save_index:
-        #     temp_save_index += 1
-        #     temp_song_name = songname
-        #     with self.cursor() as cur:
-        #         songname = re.sub('(_new\d+)|(_new)', '', songname)
-        #         print 'insert:', songname
-        #         cur.execute(self.INSERT_SONG, (songname, file_hash))
-        #         return cur.lastrowid
-        # else:
-        #     if temp_song_name != songname:
-        #         temp_save_index = 0
-        #     else:
-        #         temp_save_index += 1
+        #     cur.execute(self.INSERT_SONG, (songname, file_hash))
+        #     return cur.lastrowid
+        songname = str(songname)
+
+        global temp_save_index
+        global temp_song_name
+        if not temp_save_index:
+            temp_save_index += 1
+            temp_song_name = songname
+            with self.cursor() as cur:
+                songname = re.sub('(_new\d+)|(_new)', '', songname)
+                print 'insert:', songname
+                cur.execute(self.INSERT_SONG, (songname, file_hash))
+                return cur.lastrowid
+        else:
+            if temp_song_name != songname:
+                temp_save_index = 0
+            else:
+                temp_save_index += 1
 
 
     def query(self, hash):

@@ -33,7 +33,7 @@ if __name__ == '__main__':
 	# Fingerprint all the wav's in the directory we give it
 	djv.fingerprint_directory("Q:\huawei\huawei-dejavu\wav", [".wav"], 3)
 	print('正在识别指定音乐·······')
-	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\mp3\Josh-Woodward--I-Want-To-Destroy-Something-Beautiful.mp3')
+	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\wav\Choc--Eigenvalue-Subspace-Decomposition_new.wav')
 	print('已经识别出指定音乐！')
 	song['song_name'] = re.sub('(_new\d+)|(_new)', '', str(song['song_name']))
 	print("From file we recognized: %s\n" % song)
