@@ -14,7 +14,8 @@ def api_comparator(func):
     def mp3wav():
 
         wav_path = r"Q:\huawei\huawei-dejavu\wav"
-        mp3_res = os.walk(r'Q:\huawei\huawei-dejavu\new_mp3')
+        # mp3_res = os.walk(r'Q:\huawei\huawei-dejavu\new_mp3')
+        mp3_res = os.walk(r'Q:\huawei\huawei-dejavu\mp3')
         wav_res = os.walk(wav_path)
         try:
             lir = [li for x, km, li in wav_res][0]
