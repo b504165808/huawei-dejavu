@@ -5,10 +5,10 @@ import warnings
 
 from pub_utils.towav.mp3_to_wav import api_comparator
 from pub_utils.music_cuter.cuter import utils_cuter
-
-warnings.filterwarnings("ignore")
 from dejavu import Dejavu
 from dejavu.recognize import FileRecognizer, MicrophoneRecognizer
+warnings.filterwarnings("ignore")
+
 
 # load config from a JSON file (or anything outputting a python dictionary)
 
@@ -32,9 +32,9 @@ if __name__ == '__main__':
 
 	# Fingerprint all the wav's in the directory we give it
 	djv.fingerprint_directory("Q:\huawei\huawei-dejavu\wav", [".wav"], 3)
-	print('正在识别指定音乐·······')
+	print(u'正在识别指定音乐·······')
 	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\wav\Choc--Eigenvalue-Subspace-Decomposition_new.wav')
-	print('已经识别出指定音乐！')
+	print(u'已经识别出指定音乐！')
 	song['song_name'] = re.sub('(_new\d+)|(_new)', '', str(song['song_name']))
 	print("From file we recognized: %s\n" % song)
 
