@@ -8,12 +8,13 @@ import wave
 import io
 # mp3转换器
 
+
 def api_comparator(func):
 
     def mp3wav():
 
         wav_path = r"Q:\huawei\huawei-dejavu\wav"
-        mp3_res = os.walk(r'Q:\huawei\huawei-dejavu\mp3')
+        mp3_res = os.walk(r'Q:\huawei\huawei-dejavu\new_mp3')
         wav_res = os.walk(wav_path)
         try:
             lir = [li for x, km, li in wav_res][0]
@@ -41,7 +42,7 @@ def api_comparator(func):
                         f = wave.open(flie_wav_path, 'wb')
                         f.setnchannels(1)
                         f.setsampwidth(1)
-                        f.setframerate(6000)
+                        f.setframerate(44100)
                         f.setnframes(l)
                         f.writeframes(raw_data)
                         f.close()

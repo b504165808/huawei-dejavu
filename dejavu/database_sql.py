@@ -7,6 +7,9 @@ from pymysql.cursors import DictCursor
 
 from dejavu.database import Database
 
+temp_save_index = 0
+temp_song_name = ''
+
 
 class SQLDatabase(Database):
     """
@@ -238,9 +241,25 @@ class SQLDatabase(Database):
         """
         Inserts song in the database and returns the ID of the inserted record.
         """
-        with self.cursor() as cur:
-            cur.execute(self.INSERT_SONG, (songname, file_hash))
-            return cur.lastrowid
+
+        songname = str(songname).replace('_new', '').replace('_new2', '')
+        global temp_save_index
+        global temp_song_name
+        if not temp_save_index:
+            temp_save_index += 1
+            temp_song_name = songname
+            with self.cursor() as cur:
+                cur.execute(self.INSERT_SONG, (songname, file_hash))
+                return cur.lastrowid
+        else:
+            if temp_song_name != songname:
+                temp_save_index = 0
+            else:
+                temp_save_index += 1
+
+
+
+
 
     def query(self, hash):
         """
@@ -300,7 +319,9 @@ class SQLDatabase(Database):
                 for hash, sid, offset in cur:
                     # (sid, db_offset - song_sampled_offset)
                     yield (sid, offset - mapper[hash])
+    def delete_same_songs(self):
 
+        pass
     def __getstate__(self):
         return (self._options,)
 

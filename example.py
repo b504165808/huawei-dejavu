@@ -1,9 +1,9 @@
 # -*-coding:utf-8-*-
 import json
-import os
 import warnings
 
-from towav.mp3_to_wav import api_comparator
+from pub_utils.towav.mp3_to_wav import api_comparator
+from pub_utils.music_cuter.cuter import utils_cuter
 
 warnings.filterwarnings("ignore")
 from dejavu import Dejavu
@@ -11,9 +11,10 @@ from dejavu.recognize import FileRecognizer, MicrophoneRecognizer
 
 # load config from a JSON file (or anything outputting a python dictionary)
 
-# 开启装饰器，将mp3全部转成WAV
+# 开启装饰器，先将完全mp3分割为2段，将新的两段mp3全部转成WAV
 
 
+@utils_cuter
 @api_comparator
 def rd_config():
 	with open("dejavu.cnf.SAMPLE") as f:
@@ -31,8 +32,9 @@ if __name__ == '__main__':
 	# Fingerprint all the wav's in the directory we give it
 	djv.fingerprint_directory("Q:\huawei\huawei-dejavu\wav", [".wav"], 3)
 	print('正在识别指定音乐·······')
-	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\wav\Josh-Woodward--I-Want-To-Destroy-Something-Beautiful.wav')
+	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\mp3\Josh-Woodward--I-Want-To-Destroy-Something-Beautiful.mp3')
 	print('已经识别出指定音乐！')
+	song['song_name'] = str(song['song_name']).replace('_new','').replace('_new2', '')
 	print("From file we recognized: %s\n" % song)
 
 	# Or recognize audio from your microphone for `secs` seconds
