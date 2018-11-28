@@ -242,23 +242,27 @@ class SQLDatabase(Database):
         Inserts song in the database and returns the ID of the inserted record.
         """
 
-        songname = str(songname).replace('_new', '').replace('_new2', '')
-        global temp_save_index
-        global temp_song_name
-        if not temp_save_index:
-            temp_save_index += 1
-            temp_song_name = songname
-            with self.cursor() as cur:
-                cur.execute(self.INSERT_SONG, (songname, file_hash))
-                return cur.lastrowid
-        else:
-            if temp_song_name != songname:
-                temp_save_index = 0
-            else:
-                temp_save_index += 1
+        with self.cursor() as cur:
 
-
-
+            cur.execute(self.INSERT_SONG, (songname, file_hash))
+            return cur.lastrowid
+        # songname = str(songname)
+        #
+        # global temp_save_index
+        # global temp_song_name
+        # if not temp_save_index:
+        #     temp_save_index += 1
+        #     temp_song_name = songname
+        #     with self.cursor() as cur:
+        #         songname = re.sub('(_new\d+)|(_new)', '', songname)
+        #         print 'insert:', songname
+        #         cur.execute(self.INSERT_SONG, (songname, file_hash))
+        #         return cur.lastrowid
+        # else:
+        #     if temp_song_name != songname:
+        #         temp_save_index = 0
+        #     else:
+        #         temp_save_index += 1
 
 
     def query(self, hash):
@@ -269,6 +273,7 @@ class SQLDatabase(Database):
         database (be careful with that one!).
         """
         # select all if no key
+
         query = self.SELECT_ALL if hash is None else self.SELECT
 
         with self.cursor() as cur:

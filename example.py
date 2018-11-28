@@ -1,5 +1,6 @@
 # -*-coding:utf-8-*-
 import json
+import re
 import warnings
 
 from pub_utils.towav.mp3_to_wav import api_comparator
@@ -34,7 +35,7 @@ if __name__ == '__main__':
 	print('正在识别指定音乐·······')
 	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\mp3\Josh-Woodward--I-Want-To-Destroy-Something-Beautiful.mp3')
 	print('已经识别出指定音乐！')
-	song['song_name'] = str(song['song_name']).replace('_new','').replace('_new2', '')
+	song['song_name'] = re.sub('(_new\d+)|(_new)', '', str(song['song_name']))
 	print("From file we recognized: %s\n" % song)
 
 	# Or recognize audio from your microphone for `secs` seconds
