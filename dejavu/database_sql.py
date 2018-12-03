@@ -317,7 +317,6 @@ class SQLDatabase(Database):
 
         # Get an iteratable of all the hashes we need
         values = mapper.keys()
-        print(list(grouper(values, 1000)))
 
         with self.cursor() as cur:
             for split_values in grouper(list(values), 1000):
@@ -325,9 +324,9 @@ class SQLDatabase(Database):
                 # Create our IN part of the query
                 query = self.SELECT_MULTIPLE
 
-                print(len(list(temp_sv)))
+
                 query = query % ', '.join(['UNHEX(%s)'] * len(list(temp_sv)))
-                print('query:%s'%query)
+
                 cur.execute(query, temp_sv)
 
                 for hash, sid, offset in cur:
