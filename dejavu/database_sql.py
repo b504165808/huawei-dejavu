@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 
 import re
-from itertools import izip_longest
-import Queue
+from itertools import zip_longest
+import queue
 
 import pymysql as mysql
 from pymysql.cursors import DictCursor
@@ -302,6 +302,7 @@ class SQLDatabase(Database):
             for split_values in grouper(values, 1000):
                 cur.executemany(self.INSERT_FINGERPRINT, split_values)
 
+
     def return_matches(self, hashes):
         """
         Return the (song_id, offset_diff) tuples associated with
@@ -309,26 +310,33 @@ class SQLDatabase(Database):
         """
         # Create a dictionary of hash => offset pairs for later lookups
         mapper = {}
+
         for hash, offset in hashes:
+
             mapper[hash.upper()] = offset
 
         # Get an iteratable of all the hashes we need
         values = mapper.keys()
-
+        # print(list(grouper(values, 1000)))
+        # print(len(values))
         with self.cursor() as cur:
-            for split_values in grouper(values, 1000):
+            for split_values in list(grouper(values, 1000)):
                 # Create our IN part of the query
                 query = self.SELECT_MULTIPLE
-                query = query % ', '.join(['UNHEX(%s)'] * len(split_values))
-
+                print(query)
+                print('len split', len(list(split_values)))
+                query = query % ', '.join(['UNHEX(%s)'] * len(list(split_values)))
+                print('query:%s'%query)
                 cur.execute(query, split_values)
 
                 for hash, sid, offset in cur:
                     # (sid, db_offset - song_sampled_offset)
                     yield (sid, offset - mapper[hash])
+
     def delete_same_songs(self):
 
         pass
+
     def __getstate__(self):
         return (self._options,)
 
@@ -340,7 +348,7 @@ class SQLDatabase(Database):
 def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return (filter(None, values) for values
-            in izip_longest(fillvalue=fillvalue, *args))
+            in zip_longest(fillvalue=fillvalue, *args))
 
 
 def cursor_factory(**factory_options):
@@ -361,14 +369,14 @@ class Cursor(object):
         cur.execute(query)
     ```
     """
-    _cache = Queue.Queue(maxsize=5)
+    _cache = queue.Queue(maxsize=5)
 
     def __init__(self, cursor_type=mysql.cursors.Cursor, **options):
         super(Cursor, self).__init__()
 
         try:
             conn = self._cache.get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             conn = mysql.connect(**options)
         else:
             # Ping the connection before using it from the cache.
@@ -380,7 +388,7 @@ class Cursor(object):
 
     @classmethod
     def clear_cache(cls):
-        cls._cache = Queue.Queue(maxsize=5)
+        cls._cache = queue.Queue(maxsize=5)
 
     def __enter__(self):
         self.cursor = self.conn.cursor(self.cursor_type)
@@ -397,5 +405,5 @@ class Cursor(object):
         # Put it back on the queue
         try:
             self._cache.put_nowait(self.conn)
-        except Queue.Full:
+        except queue.Full:
             self.conn.close()
