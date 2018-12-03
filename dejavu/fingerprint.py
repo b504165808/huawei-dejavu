@@ -156,7 +156,6 @@ def generate_hashes(peaks, fan_value=DEFAULT_FAN_VALUE):
 
                 if t_delta >= MIN_HASH_TIME_DELTA and t_delta <= MAX_HASH_TIME_DELTA:
 
-
                     h = hashlib.sha1(
                         "%s|%s|%s".encode() % (bytes(freq1), bytes(freq2), bytes(t_delta)))
 

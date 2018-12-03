@@ -139,15 +139,17 @@ class Cursor(object):
 
         This method follows the extension to the DB API 2.0 followed by Psycopg.
         """
+        print(args)
+        # args = list(args)
         conn = self._get_db()
         if PY2:  # Use bytes on Python 2 always
             query = self._ensure_bytes(query, encoding=conn.encoding)
 
-        if args is not None:
+        if args:
             print(len(list(self._escape_args(args, conn))))
-            print(query)
-            query = query % list(self._escape_args(args, conn))
 
+            query = query % self._escape_args(args, conn)
+        print(query)
         return query
 
     def execute(self, query, args=None):
