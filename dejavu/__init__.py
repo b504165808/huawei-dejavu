@@ -1,6 +1,6 @@
 from dejavu.database import get_database, Database
 import dejavu.decoder as decoder
-import fingerprint
+from . import fingerprint
 import multiprocessing
 import os
 import traceback
@@ -53,12 +53,12 @@ class Dejavu(object):
 
         pool = multiprocessing.Pool(nprocesses)
 
-        filenames_to_fingerprint = []
+        filenames_to_fingerprint= []
         for filename, _ in decoder.find_files(path, extensions):
 
-            # don't refingerprint already fingerprinted files
+            # don't refingerprint(already fingerprinted files
             if decoder.unique_hash(filename) in self.songhashes_set:
-                print "%s already fingerprinted, continuing..." % filename
+                print("%s already fingerprinted, continuing..." % filename)
                 continue
 
             filenames_to_fingerprint.append(filename)
@@ -66,7 +66,7 @@ class Dejavu(object):
         # Prepare _fingerprint_worker input
         worker_input = zip(filenames_to_fingerprint,
                            [self.limit] * len(filenames_to_fingerprint))
-        print worker_input
+        print(worker_input)
         # Send off our tasks
         iterator = pool.imap_unordered(_fingerprint_worker,
                                        worker_input)
@@ -75,14 +75,14 @@ class Dejavu(object):
         while True:
             try:
                 song_name, hashes, file_hash = iterator.next()
-                print len(hashes)
+                print(len(hashes))
             except multiprocessing.TimeoutError:
                 continue
             except StopIteration:
                 break
             except:
                 print("Failed fingerprinting")
-                # Print traceback because we can't reraise it here
+                # print(traceback because we can't reraise it here
                 traceback.print_exc(file=sys.stdout)
             else:
                 sid = self.db.insert_song(song_name, file_hash)
@@ -98,9 +98,9 @@ class Dejavu(object):
         songname = decoder.path_to_songname(filepath)
         song_hash = decoder.unique_hash(filepath)
         song_name = song_name or songname
-        # don't refingerprint already fingerprinted files
+        # don't refingerprint(already fingerprinted files
         if song_hash in self.songhashes_set:
-            print "%s already fingerprinted, continuing..." % song_name
+            print("%s already fingerprinted, continuing..." % song_name)
         else:
             song_name, hashes, file_hash = _fingerprint_worker(
                 filepath,
@@ -201,4 +201,4 @@ def chunkify(lst, n):
     Splits a list into roughly n equal parts.
     http://stackoverflow.com/questions/2130016/splitting-a-list-of-arbitrary-size-into-only-roughly-n-equal-parts
     """
-    return [lst[i::n] for i in xrange(n)]
+    return [lst[i::n] for i in range(n)]

@@ -15,8 +15,8 @@ warnings.filterwarnings("ignore")
 # 开启装饰器，先将完全mp3分割为2段，将新的两段mp3全部转成WAV
 
 
-@utils_cuter
-# @api_comparator
+@utils_cuter  # 切割器
+# @api_comparator # 转码器
 def rd_config():
 	with open("dejavu.cnf.SAMPLE") as f:
 		config = json.load(f)
@@ -31,22 +31,24 @@ if __name__ == '__main__':
 	# mp3_to_wav
 	# 更改源码后  支持直接添加MP3指纹
 	# Fingerprint all the wav's in the directory we give it
+
+	# 读取磁盘进行存储指纹 并识别
 	djv.fingerprint_directory(r"Q:\huawei\huawei-dejavu\new_mp3", [".mp3"], 3)
 	print(u'正在识别指定音乐·······')
 	song = djv.recognize(FileRecognizer, r'Q:\huawei\huawei-dejavu\mp3\Sean-Fournier--Falling-For-You.mp3')
 	print(u'已经识别出指定音乐！')
 	song['song_name'] = re.sub('(_new\d+)|(_new)', '', str(song['song_name']))
 	print("From file we recognized: %s\n" % song)
-
+	# 读取麦克风获取音频进行识别
 	# Or recognize audio from your microphone for `secs` seconds
-	secs = 5
-	song = djv.recognize(MicrophoneRecognizer, seconds=secs)
-	if song is None:
-		print("Nothing recognized -- did you play the song out loud so your mic could hear it? :)")
-	else:
-		print("From mic with %d seconds we recognized: %s\n" % (secs, song))
+	# secs = 5
+	# song = djv.recognize(MicrophoneRecognizer, seconds=secs)
+	# if song is None:
+	# 	print("Nothing recognized -- did you play the song out loud so your mic could hear it? :)")
+	# else:
+	# 	print("From mic with %d seconds we recognized: %s\n" % (secs, song))
 
 	# Or use a recognizer without the shortcut, in anyway you would like
-	recognizer = FileRecognizer(djv)
-	song = recognizer.recognize_file("C:\Users\yefan\Desktop\workspace\dejavu-master\mp3\Sean-Fournier--Falling-For-You.mp3")
-	print("No shortcut, we recognized: %s\n" % song)
+	# recognizer = FileRecognizer(djv)
+	# song = recognizer.recognize_file("C:\Users\yefan\Desktop\workspace\dejavu-master\mp3\Sean-Fournier--Falling-For-You.mp3")
+	# print("No shortcut, we recognized: %s\n" % song)
