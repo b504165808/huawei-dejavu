@@ -1,3 +1,5 @@
+import wave
+
 import dejavu.fingerprint as fingerprint
 import dejavu.decoder as decoder
 import numpy as np
@@ -11,9 +13,19 @@ class BaseRecognizer(object):
         self.dejavu = dejavu
         self.Fs = fingerprint.DEFAULT_FS
 
-    def _recognize(self, *data):
+    def _recognize(self, *data, record_path='', record_id=''):
+        if record_path:
+            print('开始存储录音......')
+            sf = wave.open('%s/%s.wav' % (record_path, record_id), 'wb')
+            sf.setnchannels(1)
+            sf.setsampwidth(2)
+            sf.setframerate(44100)
+            sf.writeframes(np.array(data).tostring())
+            sf.close()
+            print('录音存储完毕！')
         matches = []
         for d in data:
+
             matches.extend(self.dejavu.find_matches(d, Fs=self.Fs))
         return self.dejavu.align_matches(matches)
 
@@ -48,7 +60,9 @@ class MicrophoneRecognizer(BaseRecognizer):
     default_channels    = 2
     default_samplerate  = 44100
 
-    def __init__(self, dejavu):
+    def __init__(self, dejavu, record_path='', record_id=''):
+        self.record_path = record_path
+        self.record_id = record_id
         super(MicrophoneRecognizer, self).__init__(dejavu)
         self.audio = pyaudio.PyAudio()
         self.stream = None
@@ -82,7 +96,9 @@ class MicrophoneRecognizer(BaseRecognizer):
 
     def process_recording(self):
         data = self.stream.read(self.chunksize)
+
         nums = np.fromstring(data, np.int16)
+
         for c in range(self.channels):
             self.data[c].extend(nums[c::self.channels])
 
@@ -95,7 +111,8 @@ class MicrophoneRecognizer(BaseRecognizer):
     def recognize_recording(self):
         if not self.recorded:
             raise NoRecordingError("Recording was not complete/begun")
-        return self._recognize(*self.data)
+
+        return self._recognize(*self.data, record_path=self.record_path,record_id=self.record_id)
 
     def get_recorded_time(self):
         return len(self.data[0]) / self.rate

@@ -156,7 +156,8 @@ def generate_hashes(peaks, fan_value=DEFAULT_FAN_VALUE):
 
                 if t_delta >= MIN_HASH_TIME_DELTA and t_delta <= MAX_HASH_TIME_DELTA:
 
+                    temp_str = "{}|{}|{}".format(freq1, freq2, t_delta)
                     h = hashlib.sha1(
-                        "%s|%s|%s".encode() % (bytes(freq1), bytes(freq2), bytes(t_delta)))
+                        temp_str.encode())
 
                     yield (h.hexdigest()[0:FINGERPRINT_REDUCTION], t1)
