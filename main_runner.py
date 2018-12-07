@@ -23,21 +23,22 @@ class DejavuRunner(object):
 	def __init__(self):
 		with open("dejavu.cnf.SAMPLE") as f:
 			self.config = json.load(f)
-
-	def file_recognizer_func(self, user_name):
+			self.djv = Dejavu(self.config)
+			
+	def file_recognizer_func(self, what_file):
 
 		# create a Dejavu instance
-		djv = Dejavu(self.config)
+		
 		# mp3_to_wav
 		# 更改源码后  支持直接添加MP3指纹
 		# Fingerprint all the wav's in the directory we give it
 
 		# 读取磁盘进行存储指纹 并识别
 		print('正在存储指纹.....')
-		djv.fingerprint_directory(r"Q:\huawei\huawei-dejavu\mp3", [".mp3"], 3)
+		self.djv.fingerprint_directory(r"Q:\huawei\huawei-dejavu\mp3", [".mp3"], 3)
 		print('音乐波谱指纹存储完毕！')
 		print(u'正在识别指定音乐·······')
-		song = djv.recognize(FileRecognizer, '', '', r'Q:\huawei\huawei-dejavu\new_mp3\Sean-Fournier--Falling-For-You-short1.mp3',)
+		song = self.djv.recognize(FileRecognizer, '', '', what_file,)
 		print(u'已经识别出指定音乐！')
 
 		if song:
@@ -60,7 +61,7 @@ class DejavuRunner(object):
 		id_num = 1
 		record_id = '%scut_here_voice_%s' % (user_name, id_num)
 		record_path = 'pub_utils/sound_recording/sound_rds'
-		song = djv.recognize(MicrophoneRecognizer, record_path=record_path, record_id=record_id, seconds=secs)
+		song = self.djv.recognize(MicrophoneRecognizer, record_path=record_path, record_id=record_id, seconds=secs)
 		record_id = record_id.replace('cut_here', '')
 		print(record_path, record_id + '.wav')
 		if song is None:
@@ -81,4 +82,6 @@ class DejavuRunner(object):
 
 # 模拟调用录音
 if __name__ == '__main__':
+	what_file = r'Q:\huawei\huawei-dejavu\new_mp3\Sean-Fournier--Falling-For-You-short1.mp3'
+	DejavuRunner().file_recognizer_func(what_file=what_file)
 	DejavuRunner().sound_record_recognizer_func('Mr_cho')
