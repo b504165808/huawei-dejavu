@@ -9,6 +9,8 @@ from dejavu.database_sql import SQLDatabase
 import warnings
 from dejavu import Dejavu
 from dejavu.recognize import FileRecognizer, MicrophoneRecognizer
+from pub_utils.sound_recording.r_judger import SoundRecord
+
 warnings.filterwarnings("ignore")
 
 
@@ -26,7 +28,11 @@ class DejavuRunner(object):
 			self.djv = Dejavu(self.config)
 			
 	def file_recognizer_func(self, what_file):
+		"""
 
+		:param what_file: 需要被识别的音乐文件路径
+		:return:
+		"""
 		# create a Dejavu instance
 		
 		# mp3_to_wav
@@ -46,11 +52,11 @@ class DejavuRunner(object):
 		print("From file we recognized: %s\n" % song)
 		print('正在返回此段音乐的指纹.......')
 		rows = SQLDatabase().return_short_hash(song_id=song['song_id'], offset=song['offset'], confidence=song['confidence'])
+
 		for row in rows:
 			print('fingerprint:', row[0])
 
-
-	def sound_record_recognizer_func(self, user_name):
+	def sound_record_recognizer_func(self):
 
 		# 读取麦克风获取音频进行识别
 		# Or recognize audio from your microphone for `secs` seconds
@@ -59,29 +65,38 @@ class DejavuRunner(object):
 		secs = 5
 		# id默认为 1  进入识别程序后根据情况更新
 		id_num = 1
-		record_id = '%scut_here_voice_%s' % (user_name, id_num)
+		record_id = 'voice_%d' % id_num
+		# 基础录音路径
 		record_path = 'pub_utils/sound_recording/sound_rds'
 		song = self.djv.recognize(MicrophoneRecognizer, record_path=record_path, record_id=record_id, seconds=secs)
-		record_id = record_id.replace('cut_here', '')
-		print(record_path, record_id + '.wav')
+
+
 		if song is None:
 			print("Nothing recognized -- did you play the song out loud so your mic could hear it? :)")
 			print('没有识别到录音所对应的音乐，%s录音信息(song_name)更新程序跳过！' % (record_id + '.wav'))
+
 		else:
 			song['song_name'] = re.sub('(_new\d+)|(_new)', '', str(song['song_name']))
 			print("From mic with %d seconds we recognized: %s\n" % (secs, song))
 			print('识别到录音所对应的音乐，正在完善录音信息(song_name)....')
-			cur_path = record_path + '/' + user_name
-			cur_wavfile_name = [name for name in os.listdir(cur_path) if '.wav' in name][-1]
+			cur_wavfile_name = [name for name in os.listdir(record_path) if '.wav' in name][-1]
 			new_cur_wavfile_name = cur_wavfile_name.replace('.wav', '') + song['song_name'] + '.wav'
+			os.rename(os.path.join(record_path, cur_wavfile_name), os.path.join(record_path, new_cur_wavfile_name))
 
-			os.rename(os.path.join(cur_path, cur_wavfile_name), os.path.join(cur_path, new_cur_wavfile_name))
-			print(new_cur_wavfile_name+'录音信息更新成功！')
 		print('识别程序完毕！')
+
+	def record_searcher(self,music_name):
+
+		is_here = SoundRecord().recoder_read(filename=music_name)
+		if is_here:
+			print('对应音乐录音存在')
+		else:
+			print('对应音乐录音不存在')
+		return is_here
 
 
 # 模拟调用录音
 if __name__ == '__main__':
-	what_file = r'Q:\huawei\huawei-dejavu\new_mp3\Sean-Fournier--Falling-For-You-short1.mp3'
+	what_file = r'Q:\huawei\huawei-dejavu\mp3\Sean-Fournier--Falling-For-You.mp3'
 	DejavuRunner().file_recognizer_func(what_file=what_file)
-	DejavuRunner().sound_record_recognizer_func('Mr_cho')
+	DejavuRunner().sound_record_recognizer_func()

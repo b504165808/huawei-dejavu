@@ -3,17 +3,18 @@ import os
 
 class SoundRecord(object):
 
-    def recoder_read(self, filename, file_path='Q:\huawei\huawei-dejavu\pub_utils\sound_recording\sound_rds'):
+    def recoder_read(self, filename,msc_path='pub_utils/sound_recording/sound_rds'):
 
         print(u'开启录音搜寻器····')
-        msc_path = file_path
 
+        print('正在查询与'+filename+'相匹配的录音.......')
         # 循环录音存放目录下所有文件
-        rd_list = os.listdir(msc_path)
+        rd_list = [rd_name for rd_name in os.listdir(msc_path) if filename in rd_name]
+        print('音乐对应的录音列表:', rd_list)
         if rd_list:
 
             if filename in rd_list:
-                print('已经找到此录音')
+                print('已经找到此录音%s' % filename)
                 return True
             else:
                 print('未找到此录音')
@@ -22,6 +23,3 @@ class SoundRecord(object):
         return False
 
 
-if __name__ == '__main__':
-
-    SoundRecord().recoder_read('')

@@ -26,21 +26,20 @@ class BaseRecognizer(object):
         if record_path:
 
             print('开始存储录音......')
-            username = record_id[:record_id.find('cut_here')]
 
-            print('正在查看'+username+'用户的录音量')
-            user_voice_path = record_path + '/' + username
+            print('正在查看录音量.....')
+            user_voice_path = record_path
             try:
 
-                voice_num = len(os.listdir(record_path+'/'+username))
-                print('用户当前录音数量为：%d' % voice_num)
+                voice_num = len(os.listdir(record_path))
+                print('当前录音数量为：%d' % voice_num)
                 record_id = record_id[:record_id.rfind('_')]+'_'+str(voice_num+1)
                 print('更新id_num为%d' % int(voice_num+1))
 
             except WindowsError:
-                print('当前不存在此用户之前使用记录，正在新建用户目录.....')
+                print('当前不存在录音记录，正在新建录音目录.....')
                 os.makedirs(user_voice_path)
-                print('用户目录新建成功，正在存储录音.....')
+                print('录音目录新建成功，正在存储录音.....')
             record_id = record_id.replace('cut_here', '')
             sf = wave.open('%s/%s.wav' % (user_voice_path, record_id), 'wb')
             sf.setnchannels(1)
