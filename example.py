@@ -55,6 +55,7 @@ def main_runer(user_name):
 	record_path = 'pub_utils/sound_recording/sound_rds'
 	song = djv.recognize(MicrophoneRecognizer, record_path=record_path, record_id=record_id, seconds=secs)
 	record_id = record_id.replace('cut_here', '')
+	print(record_path, record_id + '.wav')
 	if song is None:
 		print("Nothing recognized -- did you play the song out loud so your mic could hear it? :)")
 		print('没有识别到录音所对应的音乐，%s录音信息(song_name)更新程序跳过！' % (record_id + '.wav'))
@@ -62,8 +63,11 @@ def main_runer(user_name):
 		song['song_name'] = re.sub('(_new\d+)|(_new)', '', str(song['song_name']))
 		print("From mic with %d seconds we recognized: %s\n" % (secs, song))
 		print('识别到录音所对应的音乐，正在完善录音信息(song_name)....')
-		os.rename(os.path.join(record_path, record_id+'.wav'), os.path.join(record_path, record_id + song['song_name']+'.wav'))
-		print(record_id+song['song_name']+'.wav'+'录音信息更新成功！')
+		cur_path = record_path + '/' + user_name
+		cur_wavfile_name = [name for name in os.listdir(cur_path) if '.wav' in name][-1]
+		new_cur_wavfile_name = cur_wavfile_name.replace('.wav', '') + song['song_name'] + '.wav'
+		os.rename(os.path.join(cur_path, cur_wavfile_name), os.path.join(cur_path, new_cur_wavfile_name))
+		print(new_cur_wavfile_name+'录音信息更新成功！')
 	print('识别程序完毕！')
 
 	# Or use a recognizer without the shortcut, in anyway you would like
@@ -72,5 +76,6 @@ def main_runer(user_name):
 	# print("No shortcut, we recognized: %s\n" % song)
 
 
+# 模拟调用录音
 if __name__ == '__main__':
 	main_runer('Mr_cho')

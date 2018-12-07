@@ -24,4 +24,4 @@ class SoundRecord(object):
 
 if __name__ == '__main__':
 
-    SoundRecord().recoder_read('user_voice_0001.wav')
+    SoundRecord().recoder_read('')
