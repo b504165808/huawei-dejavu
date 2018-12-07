@@ -97,6 +97,7 @@ class DejavuRunner(object):
 # 模拟调用录音
 if __name__ == '__main__':
 	what_file = r'Q:\huawei\huawei-dejavu\mp3\Sean-Fournier--Falling-For-You.mp3'
+	DejavuRunner().fingerprints_saver()
 	DejavuRunner().file_recognizer_func(what_file=what_file)
 	DejavuRunner().sound_record_recognizer_func()
 	is_here = DejavuRunner().record_searcher(music_name='Sean-Fournier--Falling-For-You')
