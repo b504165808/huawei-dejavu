@@ -160,7 +160,7 @@ class Dejavu(object):
             Dejavu.CONFIDENCE : largest_count,
             Dejavu.OFFSET : int(largest),
             Dejavu.OFFSET_SECS : nseconds,
-            Database.FIELD_FILE_SHA1 : song.get(Database.FIELD_FILE_SHA1, None),}
+            Database.FIELD_FILE_SHA1: song.get(Database.FIELD_FILE_SHA1, None),}
         return song
 
     def recognize(self, recognizer, record_path='', record_id='', *options, **kwoptions):

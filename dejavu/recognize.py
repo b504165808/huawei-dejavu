@@ -1,3 +1,4 @@
+import os
 import wave
 
 import dejavu.fingerprint as fingerprint
@@ -15,8 +16,25 @@ class BaseRecognizer(object):
 
     def _recognize(self, *data, record_path='', record_id=''):
         if record_path:
+
             print('开始存储录音......')
-            sf = wave.open('%s/%s.wav' % (record_path, record_id), 'wb')
+            username = record_id[:record_id.find('cut_here')]
+
+            print('正在查看'+username+'用户的录音量')
+            user_voice_path = record_path + '/' + username
+            try:
+
+                voice_num = len(os.listdir(record_path+'/'+username))
+                print('用户当前录音数量为：%d' % voice_num)
+                record_id = record_id[:record_id.rfind('_')]+'_'+str(voice_num+1)
+                print('更新id_num为%d' % int(voice_num+1))
+
+            except WindowsError:
+                print('当前不存在此用户之前使用记录，正在新建用户目录.....')
+                os.makedirs(user_voice_path)
+                print('用户目录新建成功，正在存储录音.....')
+            record_id = record_id.replace('cut_here', '')
+            sf = wave.open('%s/%s.wav' % (user_voice_path, record_id), 'wb')
             sf.setnchannels(1)
             sf.setsampwidth(2)
             sf.setframerate(44100)
