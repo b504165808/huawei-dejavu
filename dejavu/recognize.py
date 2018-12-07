@@ -34,7 +34,7 @@ class BaseRecognizer(object):
 
 
 class FileRecognizer(BaseRecognizer):
-    def __init__(self, dejavu):
+    def __init__(self, dejavu, record_path='', record_id=''):
         super(FileRecognizer, self).__init__(dejavu)
 
     def recognize_file(self, filename):
@@ -50,7 +50,7 @@ class FileRecognizer(BaseRecognizer):
 
         return match
 
-    def recognize(self, filename):
+    def recognize(self, filename,):
         return self.recognize_file(filename)
 
 

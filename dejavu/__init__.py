@@ -163,7 +163,7 @@ class Dejavu(object):
             Database.FIELD_FILE_SHA1 : song.get(Database.FIELD_FILE_SHA1, None),}
         return song
 
-    def recognize(self, recognizer, record_path, record_id, *options, **kwoptions):
+    def recognize(self, recognizer, record_path='', record_id='', *options, **kwoptions):
 
         r = recognizer(self, record_path, record_id)
 
