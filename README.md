@@ -1,5 +1,5 @@
 根据dejavu  b504165808  python中白叶繁更新改良的dejavu音频识别程序，使用请标明出处！！！ 
-
+python3 版本使用
 dejavu
 ==========
 
