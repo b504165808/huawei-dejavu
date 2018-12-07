@@ -85,7 +85,7 @@ class DejavuRunner(object):
 
 		print('识别程序完毕！')
 
-	def record_searcher(self,music_name):
+	def record_searcher(self, music_name):
 
 		is_here = SoundRecord().recoder_read(filename=music_name)
 		if is_here:
@@ -100,4 +100,5 @@ if __name__ == '__main__':
 	what_file = r'Q:\huawei\huawei-dejavu\mp3\Sean-Fournier--Falling-For-You.mp3'
 	# DejavuRunner().file_recognizer_func(what_file=what_file)
 	# DejavuRunner().sound_record_recognizer_func()
-	DejavuRunner().record_searcher(music_name='Sean-Fournier--Falling-For-You')
+	is_here = DejavuRunner().record_searcher(music_name='Sean-Fournier--Falling-For-You')
+	print(is_here)
