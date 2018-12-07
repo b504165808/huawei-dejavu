@@ -12,7 +12,7 @@ from dejavu.recognize import MicrophoneRecognizer
 from argparse import RawTextHelpFormatter
 
 warnings.filterwarnings("ignore")
-
+# 配置文件位置
 DEFAULT_CONFIG_FILE = "dejavu.cnf.SAMPLE"
 
 

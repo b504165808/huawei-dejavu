@@ -3,6 +3,7 @@ import abc
 
 
 class Database(object):
+    # 数据库连接
     __metaclass__ = abc.ABCMeta
 
     FIELD_FILE_SHA1 = 'file_sha1'

@@ -101,7 +101,7 @@ def get_2D_peaks(arr2D, plot=False, amp_min=DEFAULT_AMP_MIN):
                                        border_value=1)
 
     # Boolean mask of arr2D with True at peaks
-
+    # python 高版本支持^运算
     detected_peaks = local_max ^ eroded_background
 
     # extract peaks

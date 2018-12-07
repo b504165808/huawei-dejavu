@@ -9,12 +9,20 @@ import time
 
 
 class BaseRecognizer(object):
-
+    # 基础识别器，在所有识别器中数据汇总返回的地方
     def __init__(self, dejavu):
         self.dejavu = dejavu
         self.Fs = fingerprint.DEFAULT_FS
 
     def _recognize(self, *data, record_path='', record_id=''):
+        """
+
+        :param data: 录音np16 格式数据流
+        :param record_path: 录音目录
+        :param record_id: 录音id
+        :return:
+        """
+        # 在此源码中增加了录音存储功能
         if record_path:
 
             print('开始存储录音......')
@@ -52,13 +60,14 @@ class BaseRecognizer(object):
 
 
 class FileRecognizer(BaseRecognizer):
+    # 文件识别器，读取磁盘音乐进行识别的地方
     def __init__(self, dejavu, record_path='', record_id=''):
         super(FileRecognizer, self).__init__(dejavu)
 
     def recognize_file(self, filename):
         print(filename)
         frames, self.Fs, file_hash = decoder.read(filename, self.dejavu.limit)
-
+        print(file_hash)
         t = time.time()
         match = self._recognize(*frames)
         t = time.time() - t
@@ -73,6 +82,7 @@ class FileRecognizer(BaseRecognizer):
 
 
 class MicrophoneRecognizer(BaseRecognizer):
+    # 麦克风识别器，读取麦克风数据的地方
     default_chunksize   = 8192
     default_format      = pyaudio.paInt16
     default_channels    = 2
@@ -85,8 +95,11 @@ class MicrophoneRecognizer(BaseRecognizer):
         self.audio = pyaudio.PyAudio()
         self.stream = None
         self.data = []
+        # 声道
         self.channels = MicrophoneRecognizer.default_channels
+        # 块大小
         self.chunksize = MicrophoneRecognizer.default_chunksize
+        # 采样率
         self.samplerate = MicrophoneRecognizer.default_samplerate
         self.recorded = False
 
@@ -113,20 +126,23 @@ class MicrophoneRecognizer(BaseRecognizer):
         self.data = [[] for i in range(channels)]
 
     def process_recording(self):
+        # 录音开始
         data = self.stream.read(self.chunksize)
-
+        # 将录音data转成int16 并转为字符串
         nums = np.fromstring(data, np.int16)
 
         for c in range(self.channels):
             self.data[c].extend(nums[c::self.channels])
 
     def stop_recording(self):
+        # 录音结束
         self.stream.stop_stream()
         self.stream.close()
         self.stream = None
         self.recorded = True
 
     def recognize_recording(self):
+        # 录音识别
         if not self.recorded:
             raise NoRecordingError("Recording was not complete/begun")
 

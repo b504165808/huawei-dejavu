@@ -9,6 +9,7 @@ import numpy as _np
 
 
 def _wav2array(nchannels, sampwidth, data):
+    # 将音乐文件转为wav, 矩阵
     """data must be the string containing the bytes from the wav file."""
     num_samples, remainder = divmod(len(data), sampwidth * nchannels)
     if remainder > 0:

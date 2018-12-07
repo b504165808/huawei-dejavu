@@ -9,11 +9,9 @@ from pymysql.cursors import DictCursor
 
 from dejavu.database import Database
 
-temp_save_index = 0
-temp_song_name = ''
-
 
 class SQLDatabase(Database):
+    # 指纹和识别需要的sql语句汇总
     """
     Queries:
 
@@ -248,23 +246,6 @@ class SQLDatabase(Database):
 
             cur.execute(self.INSERT_SONG, (songname, file_hash))
             return cur.lastrowid
-        # songname = str(songname)
-        #
-        # global temp_save_index
-        # global temp_song_name
-        # if not temp_save_index:
-        #     temp_save_index += 1
-        #     temp_song_name = songname
-        #     with self.cursor() as cur:
-        #         songname = re.sub('(_new\d+)|(_new)', '', songname)
-        #         print 'insert:', songname
-        #         cur.execute(self.INSERT_SONG, (songname, file_hash))
-        #         return cur.lastrowid
-        # else:
-        #     if temp_song_name != songname:
-        #         temp_save_index = 0
-        #     else:
-        #         temp_save_index += 1
 
 
     def query(self, hash):
@@ -333,11 +314,16 @@ class SQLDatabase(Database):
                     # (sid, db_offset - song_sampled_offset)
                     yield (sid, offset - mapper[hash])
 
-    def delete_same_songs(self):
-
-        pass
+    def return_short_hash(self, song_id, offset, confidence):
+        # 新建了一个返回指定id 录音位置, 信任数的指纹函数
+        with self.cursor() as cur:
+            ex_str = 'select * from fingerprints where song_id=%d and offset>=%d and offset<=%d' % (song_id, offset-confidence, offset+confidence)
+            cur.execute(ex_str)
+            # 返回范围内的指纹
+            return cur.fetchall()
 
     def __getstate__(self):
+
         return (self._options,)
 
     def __setstate__(self, state):
